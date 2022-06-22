@@ -1,5 +1,5 @@
 ﻿//create connection
-var connectionUserCount = new SignalR.HubConnectionBuilder.withUrl("/hubs/usersCount").Build();
+var connectionUserCount = new signalR.HubConnectionBuilder().withUrl("/hubs/usersCount").build();
 
 //connect to methods that hub invokes aka receive notfications from hub
 connectionUserCount.on("upateTotlViews", (value) => {
