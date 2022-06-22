@@ -29,3 +29,13 @@ function rejected() {
 }
 
 connectionUserCount.start().then(fulfilled, rejected);
+
+
+
+//Create SignalR Hub
+//Add method to Hub
+//Add client side SignalR
+//Connect to SignalR Hub from client js
+//Call SignalR Hub method
+//SignalR Hub invoke method in client js to notify clients
+//Client recieve updates from SignalR hub and perform actions
