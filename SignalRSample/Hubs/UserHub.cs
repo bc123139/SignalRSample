@@ -9,6 +9,7 @@ namespace SignalRSample.Hubs
         public async Task NewWindowLoaded()
         {
             TotalViews++;
+            //send update to all clients that total views have been updated
             await Clients.All.SendAsync("upateTotlViews",TotalViews);
         }
     }
