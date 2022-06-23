@@ -18,6 +18,15 @@ namespace SignalRSample.Controllers
             return View();
         }
 
+        public IActionResult DeathlyHallows(string type)
+        {
+            if (SD.DealthyHallowRace.ContainsKey(type))
+            {
+                SD.DealthyHallowRace[type]++;
+            }
+            return Accepted();
+        }
+
         public IActionResult Privacy()
         {
             return View();
