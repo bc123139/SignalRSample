@@ -31,6 +31,7 @@ function fulfilled() {
     //do something on start
     console.log("Connection to User Hub Successful");
     document.getElementById("sendButton").disabled = false;
+    connectionNotification.send("LoadMessages");
 }
 
 function rejected() {
