@@ -20,7 +20,7 @@ namespace SignalRSample.Hubs
                         houseList += $"{str.Split(":")[1]} ";
                     }
                 }
-                await Clients.Caller.SendAsync("subscriptionStatus", houseList, houseName, true);
+                await Clients.Caller.SendAsync("subscriptionStatus", houseList, houseName.ToLower(), true);
                 await Groups.AddToGroupAsync(Context.ConnectionId, houseName);
             }
         }
@@ -39,7 +39,7 @@ namespace SignalRSample.Hubs
                         houseList += $"{str.Split(":")[1]} ";
                     }
                 }
-                await Clients.Caller.SendAsync("subscriptionStatus", houseList, houseName, false);
+                await Clients.Caller.SendAsync("subscriptionStatus", houseList, houseName.ToLower(), false);
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, houseName);
             }
         }
