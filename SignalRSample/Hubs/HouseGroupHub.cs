@@ -12,6 +12,15 @@ namespace SignalRSample.Hubs
             {
                 GroupsJoined.Add($"{Context.ConnectionId}:{ houseName}");
                 //do something else
+                string houseList = string.Empty;
+                foreach (var str in GroupsJoined)
+                {
+                    if (str.Contains(Context.ConnectionId))
+                    {
+                        houseList += $"{str.Split(":")[1]} ";
+                    }
+                }
+                await Clients.Caller.SendAsync("subscriptionStatus", houseList, houseName, true);
                 await Groups.AddToGroupAsync(Context.ConnectionId, houseName);
             }
         }
@@ -22,6 +31,15 @@ namespace SignalRSample.Hubs
             {
                 GroupsJoined.Remove($"{Context.ConnectionId}:{ houseName}");
                 //do something else
+                string houseList = string.Empty;
+                foreach (var str in GroupsJoined)
+                {
+                    if (str.Contains(Context.ConnectionId))
+                    {
+                        houseList += $"{str.Split(":")[1]} ";
+                    }
+                }
+                await Clients.Caller.SendAsync("subscriptionStatus", houseList, houseName, false);
                 await Groups.RemoveFromGroupAsync(Context.ConnectionId, houseName);
             }
         }
