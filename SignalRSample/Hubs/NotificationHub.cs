@@ -9,7 +9,7 @@ namespace SignalRSample.Hubs
 
         public async Task SendMessage(string message)
         {
-            if (string.IsNullOrEmpty(message))
+            if (!string.IsNullOrEmpty(message))
             {
                 notificationCounter++;
                 messages.Add(message);
