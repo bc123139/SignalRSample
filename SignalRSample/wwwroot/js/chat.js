@@ -17,10 +17,20 @@ connectionChat.on("MessageRecieved", function (sender, message) {
 btn_send_message.addEventListener("click", function (event) {
     var sender = document.getElementById("senderEmail").value;
     var message = document.getElementById("chatMessage").value;
-    //send message to all of the users
-    connectionChat.send("SenMessageToAll", sender, message).catch(function (err) {
-        return console.error(err.toString());
-    });
+    var reciever = document.getElementById("receiverEmail").value;
+    if (reciever.length > 0) {
+
+        connectionChat.send("SenMessageToReciever", sender, reciever, message).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+    else {
+        //send message to all of the users
+        connectionChat.send("SenMessageToAll", sender, message).catch(function (err) {
+            return console.error(err.toString());
+        });
+    }
+   
     event.preventDefault();
 });
 
