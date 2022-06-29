@@ -1,7 +1,18 @@
 ﻿var dataTable;
+//create connection
+var connectionOrder = new signalR.HubConnectionBuilder()
+    //.configureLogging(signalR.LogLevel.Information)
+    .withUrl("/hubs/order").build();
+
 $(document).ready(function () {
     loadDataTable();
 });
+
+connectionOrder.on("newOrder", () => {
+    dataTable.ajax.reload();
+    toastr.success("New order recieved");
+});
+
 
 function loadDataTable() {
 
@@ -30,3 +41,16 @@ function loadDataTable() {
         ]
     });
 }
+
+
+//start connection
+function fulfilled() {
+
+    //do something on start
+    console.log("Connection to Order Hub Successful");
+}
+function rejected() {
+    //rejected logs
+}
+
+connectionOrder.start().then(fulfilled, rejected);

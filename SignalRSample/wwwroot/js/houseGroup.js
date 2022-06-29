@@ -147,7 +147,7 @@ connectionHouse.on("subscriptionStatus", (strGroupsJoined, houseName, hasSubscri
 function fulfilled() {
   
     //do something on start
-    console.log("Connection to User Hub Successful");
+    console.log("Connection to HouseGroup Hub Successful");
 }
 function rejected() {
     //rejected logs
