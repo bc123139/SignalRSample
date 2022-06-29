@@ -15,7 +15,9 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 var connectionAzureSignalR = "Endpoint=https://signalr-sample.service.signalr.net;AccessKey=zaHUVQXf0z0zNcCROW1OHLKjbDq6dsAw143GbAuADKU=;Version=1.0;";
-builder.Services.AddSignalR().AddAzureSignalR(connectionAzureSignalR);
+builder.Services.AddSignalR()
+    //.AddAzureSignalR(connectionAzureSignalR)
+    ;
 
 var app = builder.Build();
 

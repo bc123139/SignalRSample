@@ -1,7 +1,9 @@
 ﻿//create connection
 var connectionUserCount = new signalR.HubConnectionBuilder()
     //.configureLogging(signalR.LogLevel.Information)
-    .withUrl("/hubs/usersCount", signalR.HttpTransportType.WebSockets).build();
+    .withUrl("/hubs/usersCount", signalR.HttpTransportType.WebSockets)
+    .withAutomaticReconnect()
+    .build();
 
 //connect to methods that hub invokes aka receive notfications from hub
 connectionUserCount.on("upateTotalViews", (value) => {
@@ -31,6 +33,21 @@ function fulfilled() {
 function rejected() {
     //rejected logs
 }
+
+connectionUserCount.onclose((error) => {
+    console.log("Connection onclose");
+    document.body.style.background = "red";
+});
+
+connectionUserCount.onreconnected(function(connectionId) {
+    console.log("Connection onreconnected");
+    document.body.style.background = "green";
+});
+
+connectionUserCount.onreconnecting(function(error) {
+    console.log("Connection onreconnecting");
+    document.body.style.background = "orange";
+});
 
 connectionUserCount.start().then(fulfilled, rejected);
 
