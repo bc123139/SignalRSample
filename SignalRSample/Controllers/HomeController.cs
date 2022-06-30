@@ -61,6 +61,11 @@ namespace SignalRSample.Controllers
             return View();
         }
 
+        public IActionResult Chat()
+        {
+            return View();
+        }
+
         [ActionName("Order")]
         public async Task<IActionResult> Order()
         {
