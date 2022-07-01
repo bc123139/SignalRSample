@@ -1,46 +1,29 @@
-﻿let btn_send_message = document.getElementById("sendMessage");
-//create connection
+﻿//create connection
 var connectionChat = new signalR.HubConnectionBuilder()
     //.configureLogging(signalR.LogLevel.Information)
-    .withUrl("/hubs/basicchat").build();
+    .withUrl("/hubs/chat")
+    .withAutomaticReconnect([0,1000,5000,null])
+    .build();
 
-btn_send_message.disabled = true;
-
-connectionChat.on("MessageRecieved", function (sender, message) {
-    var li = document.createElement("li");
-    li.textContent = `${sender} - ${message}`;
-    document.getElementById("messagesList").appendChild(li);
-
+connectionChat.on("ReceiveUserConnected", function (userId, userName) {
+    addMessage(`${userName} has openned a connection`);
 });
 
-
-btn_send_message.addEventListener("click", function (event) {
-    var sender = document.getElementById("senderEmail").value;
-    var message = document.getElementById("chatMessage").value;
-    var reciever = document.getElementById("receiverEmail").value;
-    if (reciever.length > 0) {
-
-        connectionChat.send("SenMessageToReciever", sender, reciever, message).catch(function (err) {
-            return console.error(err.toString());
-        });
+function addMessage(msg) {
+    if (msg == null && msg == '') {
+        return;
     }
-    else {
-        //send message to all of the users
-        connectionChat.send("SenMessageToAll", sender, message).catch(function (err) {
-            return console.error(err.toString());
-        });
-    }
-   
-    event.preventDefault();
-});
-
+    let ui = document.getElementById('messagesList');
+    let li = document.createElement("li");
+    li.innerHTML = msg;
+    ui.appendChild(li);
+}
 
 //start connection
 function fulfilled() {
 
     //do something on start
     console.log("Connection to Chat Hub Successful");
-    btn_send_message.disabled = false;
 }
 function rejected() {
     //rejected logs
