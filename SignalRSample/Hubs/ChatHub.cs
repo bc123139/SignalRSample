@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using SignalRSample.Data;
+using System.Security.Claims;
 
 namespace SignalRSample.Hubs
 {
@@ -12,19 +12,31 @@ namespace SignalRSample.Hubs
         {
             _db = db;
         }
-        public async Task SenMessageToAll(string sender, string message)
-        {
-            await Clients.All.SendAsync("MessageRecieved", sender, message);
-        }
 
-        [Authorize]
-        public async Task SenMessageToReciever(string sender,string reciever, string message)
+        public override Task OnConnectedAsync()
         {
-            var userId = _db.Users.FirstOrDefault(x => x.Email.ToLower() == reciever.ToLower())?.Id;
+            var userId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (!string.IsNullOrEmpty(userId))
             {
-                await Clients.User(userId).SendAsync("MessageRecieved", sender, message);
+                var userName=_db.Users.FirstOrDefault(x=>x.Id == userId)?.UserName;
+                Clients.Users(HubConnections.OnlineUsers()).SendAsync("RecieveUserConnected",userId,userName);  
+                HubConnections.AddUserConnection(userId,Context.ConnectionId);
             }
+            return base.OnConnectedAsync();
         }
+        //public async Task SenMessageToAll(string sender, string message)
+        //{
+        //    await Clients.All.SendAsync("MessageRecieved", sender, message);
+        //}
+
+        //[Authorize]
+        //public async Task SenMessageToReciever(string sender,string reciever, string message)
+        //{
+        //    var userId = _db.Users.FirstOrDefault(x => x.Email.ToLower() == reciever.ToLower())?.Id;
+        //    if (!string.IsNullOrEmpty(userId))
+        //    {
+        //        await Clients.User(userId).SendAsync("MessageRecieved", sender, message);
+        //    }
+        //}
     }
 }
