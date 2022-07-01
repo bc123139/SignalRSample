@@ -18,11 +18,36 @@ namespace SignalRSample.Hubs
             if (!string.IsNullOrEmpty(userId))
             {
                 var userName=_db.Users.FirstOrDefault(x=>x.Id == userId)?.UserName;
-                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected",userId,userName,HubConnections.HasUser(userId));  
+                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected",userId,userName);  
                 HubConnections.AddUserConnection(userId,Context.ConnectionId);
             }
             return base.OnConnectedAsync();
         }
+
+
+        public override Task OnDisconnectedAsync(Exception? exception)
+        {
+            var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (HubConnections.HasUserConnection(UserId, Context.ConnectionId))
+            {
+                var UserConnections = HubConnections.Users[UserId];
+                UserConnections.Remove(Context.ConnectionId);
+
+                HubConnections.Users.Remove(UserId);
+                if (UserConnections.Any())
+                    HubConnections.Users.Add(UserId, UserConnections);
+            }
+
+            if (!string.IsNullOrEmpty(UserId))
+            {
+                var userName = _db.Users.FirstOrDefault(u => u.Id == UserId)?.UserName;
+                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserDisconnected", UserId, userName);
+                HubConnections.AddUserConnection(UserId, Context.ConnectionId);
+            }
+            return base.OnDisconnectedAsync(exception);
+        }
+
         //public async Task SenMessageToAll(string sender, string message)
         //{
         //    await Clients.All.SendAsync("MessageRecieved", sender, message);
