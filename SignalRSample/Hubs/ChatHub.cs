@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 using SignalRSample.Data;
 using System.Security.Claims;
 
@@ -19,7 +18,7 @@ namespace SignalRSample.Hubs
             if (!string.IsNullOrEmpty(userId))
             {
                 var userName=_db.Users.FirstOrDefault(x=>x.Id == userId)?.UserName;
-                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected",userId,userName);  
+                Clients.Users(HubConnections.OnlineUsers()).SendAsync("ReceiveUserConnected",userId,userName,HubConnections.HasUser(userId));  
                 HubConnections.AddUserConnection(userId,Context.ConnectionId);
             }
             return base.OnConnectedAsync();

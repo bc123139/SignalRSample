@@ -5,8 +5,11 @@ var connectionChat = new signalR.HubConnectionBuilder()
     .withAutomaticReconnect([0,1000,5000,null])
     .build();
 
-connectionChat.on("ReceiveUserConnected", function (userId, userName) {
-    addMessage(`${userName} has openned a connection`);
+connectionChat.on("ReceiveUserConnected", function (userId, userName, isOldConnection) {
+    if (!isOldConnection) {
+        addMessage(`${userName} has openned a connection`);
+    }
+    
 });
 
 function addMessage(msg) {
