@@ -66,9 +66,19 @@ namespace SignalRSample.Hubs
         public async Task SendPublicMessage(int roomId, string message, string roomName)
         {
             var UserId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userName = _db.Users.FirstOrDefault(u => u.Id == UserId).UserName;
+            var userName = _db.Users.FirstOrDefault(u => u.Id == UserId)?.UserName;
 
             await Clients.All.SendAsync("ReceivePublicMessage", roomId, UserId, userName, message, roomName);
+        }
+
+        public async Task SendPrivateMessage(string receiverId, string message, string receiverName)
+        {
+            var senderId = Context.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var senderName = _db.Users.FirstOrDefault(u => u.Id == senderId).UserName;
+
+            var users = new string[] { senderId, receiverId };
+
+            await Clients.Users(users).SendAsync("ReceivePrivateMessage", senderId, senderName, receiverId, message, Guid.NewGuid(), receiverName);
         }
 
         //public async Task SenMessageToAll(string sender, string message)
