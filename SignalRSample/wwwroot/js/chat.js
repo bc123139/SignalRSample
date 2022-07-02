@@ -25,6 +25,11 @@ connectionChat.on("ReceiveAddRoomMessage", function (maxRoom, roomId, roomName, 
 });
 
 
+connectionChat.on("ReceiveDeleteRoomMessage", function (deleted, selected, roomName, userName) {
+    addMessage(`${userName} has deleted room  ${roomName}`);
+});
+
+
 function addnewRoom(maxRoom) {
 
     let createRoomName = document.getElementById('createRoomName');
@@ -52,6 +57,45 @@ function addnewRoom(maxRoom) {
             createRoomName.value = '';
 
 
+        },
+        error: function (xhr) {
+            alert('error');
+        }
+    })
+
+
+
+}
+
+function deleteRoom() {
+
+    let ddlDelRoom = document.getElementById('ddlDelRoom');
+
+    var roomName = ddlDelRoom.options[ddlDelRoom.selectedIndex].text;
+
+    let text = `Do you want to delete Chat Room ${roomName}?`;
+    if (confirm(text) == false) {
+        return;
+    }
+
+    if (roomName == null && roomName == '') {
+        return;
+    }
+
+    let roomId = ddlDelRoom.value;
+
+    $.ajax({
+        url: `/ChatRooms/DeleteChatRoom/${roomId}`,
+        dataType: "json",
+        type: "DELETE",
+        contentType: 'application/json;',
+        async: true,
+        processData: false,
+        cache: false,
+        success: function (json) {
+
+            connectionChat.send("SendDeleteRoomMessage", json.deleted, json.selected, roomName);
+            fillRoomDropDown();
         },
         error: function (xhr) {
             alert('error');
